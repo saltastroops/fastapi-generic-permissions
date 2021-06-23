@@ -124,6 +124,34 @@ verify_permissions.set_default_message(403, "You are not allowed to do this")
 verify_permissions.set_default_message(418, "Only tea can be brewed here")
 ```
 
+## Example
+
+A complete working example can be found in the file `example.py`, which is located in the project;'s root directory. Note you need `uvicorn`, which is not installed automatically when installing `fastapi-generic-permissions`. You can install it as follows.
+
+```shell
+pip install uvicorn
+```
+
+You can then run the script in `example.py`.
+
+```shell
+python example.py
+```
+
+This launches a server which provides a GET endpoint `/users/{id}` and a POST endpoint `/cook`. You can use `curl` to test this example API. Here are two examples of successful requests.
+
+```shell
+curl -i "http://localhost:8000/users/1?user_id=1"
+curl -i -X POST "http://localhost:8000/cook?user_id=2"
+```
+
+The following two examples show requests that fails because of pernission checking.
+
+```shell
+curl -i "http://localhost:8000/users/1?user_id=2"
+curl -i -X POST "http://localhost:8000/cook?user_id=1"
+```
+
 ## Acknowledgments
 
 While this library has a slightly different approach, it has been inspired by `fastapi-permissions`, and its source code has proven extremely helpful.
