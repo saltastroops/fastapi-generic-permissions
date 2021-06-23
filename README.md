@@ -67,7 +67,7 @@ def view_article(article_id: int = Path(..., title="Article identifier")) -> Art
     return get_article(article_id)
 ```
 
-If permission is denied, an `HTTPException` with status code 403 and the message `"Forbidden"` is raised. (See below how to change this.)
+If permission is denied, an `HTTPException` with status code 403 and the message `"Forbidden"` is raised. (See below how to change the status code and message.)
 
 ### A performance caveat
 
@@ -99,7 +99,7 @@ So if both your permission checks and your path operations make the same databas
 
 ### Changing the error message and status code
 
-Sometimes it is not appropriate to return the status code 403 if the user is not allowed to perform a request. For example, if a malicious user `demon` tries to view the personal details for a user `saint`, you might not want to tell `demon` that `saint` actually exists.
+Sometimes it is not appropriate to return the status code 403 if the user is not allowed to perform a request. For example, if a malicious user `demon` tries to view the personal details of a user `saint`, you might not want to tell `demon` that `saint` actually exists.
 
 Instead you can return a `404 Not Found` error by passing the status code as an argument to the Permission function.
 
@@ -109,7 +109,7 @@ def get_user(user_id: int, password: str) -> User:
     return find_user(user_id)
 ```
 
-If you aren't happy with the default error message (`"Forbidden"` for status code 403, `"Not Found"` for status code 404, and `"Error"` for any other status code), you can pass another message to the `Permission` function.
+If you aren't happy with the default error message (`"Forbidden"` for status code 403, `"Not Found"` for status code 404, and `"Error"` for any other status code), you can pass another message to `verify_permission`.
 
 ```python
 @app.delete('/spell', dependencies=[verify_permission(may_create_spell, message="Only wizards are allowed to create a spell.")])
@@ -126,26 +126,26 @@ verify_permissions.set_default_message(418, "Only tea can be brewed here")
 
 ## Example
 
-A complete working example can be found in the file `example.py`, which is located in the project;'s root directory. Note you need `uvicorn`, which is not installed automatically when installing `fastapi-generic-permissions`. You can install it as follows.
+A complete working example can be found in the file `example.py`, which is located in the project's root directory. (This file is not included when you install `fastapi-generic-permissions`.) Note you need `uvicorn` to run it, which is not installed automatically when installing `fastapi-generic-permissions`. You can install it as follows.
 
 ```shell
 pip install uvicorn
 ```
 
-You can then run the script in `example.py`.
+You can then launch the server in `example.py`.
 
 ```shell
 python example.py
 ```
 
-This launches a server which provides a GET endpoint `/users/{id}` and a POST endpoint `/cook`. You can use `curl` to test this example API. Here are two examples of successful requests.
+The server provides a GET endpoint `/users/{id}` and a POST endpoint `/cook`. You can use `curl` to test these endpoints. Here are two examples of successful requests.
 
 ```shell
 curl -i "http://localhost:8000/users/1?user_id=1"
 curl -i -X POST "http://localhost:8000/cook?user_id=2"
 ```
 
-The following two examples show requests that fails because of pernission checking.
+The following two examples show requests that fails because of permission checking.
 
 ```shell
 curl -i "http://localhost:8000/users/1?user_id=2"
@@ -154,4 +154,4 @@ curl -i -X POST "http://localhost:8000/cook?user_id=1"
 
 ## Acknowledgments
 
-While this library has a slightly different approach, it has been inspired by `fastapi-permissions`, and its source code has proven extremely helpful.
+While `fastapi-generic-permissions` adopts a slightly different approach, it has been inspired by `fastapi-permissions`, and its source code has proven extremely helpful.
